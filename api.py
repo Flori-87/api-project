@@ -47,8 +47,22 @@ def chatID(chatname):
 
 @app.route("/chat/<chatID>/adduser/<userID>")
 def addUser(chatID,userID):
-    #chat_id = 'ObjectId("'+chatID+'")'
     db.chats.update_one({"_id" : ObjectId(chatID)}, {"$push" : { "users": userID }})
     return {"_id" : chatID}
+
+@app.route("/chat/<chatID>/user/<userID>/addmessage/<text>")
+def addMessage(chatID,userID,text):
+    #Purpose:Add a message to the conversation. Help: Before adding the chat message to the database, check that the incoming user is part of this chat id. If not, raise an exception.
+
+    db.chats.update_one({"_id" : ObjectId(chatID)}, {"$push" : { "users": userID }})
+    return {"_id" : chatID}
+
+- (POST) `/chat/<chat_id>/addmessage`
+  - **Params:**
+    - `chat_id`: Chat to store message
+    - `user_id`: the user that writes the message
+    - `text`: Message text
+  - **Returns:** `message_id`
+
 
 app.run("0.0.0.0", PORT , debug=True)
