@@ -75,11 +75,29 @@ def chatID(chatname):
     return chat
 """
 
-@app.route("/chat/<chatID>/adduser/<userID>")
-def addUser(chatID,userID):
-    db.chats.update_one({"_id" : ObjectId(chatID)}, {"$push" : { "users": userID }})
-    
-    return {"_id" : chatID}
+#obtain data from html
+@app.route("/chat/adduser")
+def askaddUserH():
+    return """<form action="/chat/adduser" method="post">
+            Insert a existing chat ID: <input type="text" name="chatID">
+            Insert a existing user ID: <input type="text" name="userID">
+            <input type="submit">
+            </form>"""
+
+@app.route("/user/create", methods=['GET', 'POST'])
+def getChatUser():
+    chat_id = request.form["chatID"]
+    user_id = request.form["userID"]
+    return addUser(chatID,userID)
+
+#obtain data from jupyter
+@app.route("/chat/<chatID>/adduser")
+def askaddUserJ(chatID):
+    chat_id = chatID
+    user_id = request.args["userID"]
+    return addUser(chat_id,user_id)
+
+
 """
 @app.route("/chat/<chatID>/user/<userID>/addmessage/<text>")
 def addMessage(chatID,userID,text):
