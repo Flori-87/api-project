@@ -117,7 +117,7 @@ def addMessage(chatID,userID,date,text):
     message = textExist(text,date,chatID,userID)
     if message[0]:
         return {"status":"This message by this user at that date-time is already in this chat","status code":"?"}
-    message_profile = {"chat":DBRef("chats",ObjectId(chatID),"api-project"), "user":DBRef("users",ObjectId(userID),"api-project"),'text': text, "date-time":date}
+    message_profile = {'text': text, "date-time":date,"chat":DBRef("chats",ObjectId(chatID),"api-project"), "user":DBRef("users",ObjectId(userID),"api-project")}
     db.messages.insert(message_profile)
     message = messageID(text,date,chatID,userID)
     return dumps(message)
@@ -126,13 +126,16 @@ def addMessage(chatID,userID,date,text):
 def messageID(text,date,chatID,userID):
     message = db.messages.find({"$and":[{"text" : text},{"date-time":date},{'user.$id':  ObjectId(userID)},{'chat.$id':  ObjectId(chatID)}]},{})
     return message
-    
-"""
-    `/chat/<chat_id>/addmessage`
-  - **Purpose:** Add a message to the conversation. Help: Before adding the chat message to the database, check that the incoming user is part of this chat id. If not, raise an exception.
-  - **Params:**
-    - `chat_id`: Chat to store message
-    - `user_id`: the user that writes the message
-    - `text`: Message text
-  - **Returns:** `message_id`
-"""
+
+def findList(chatID):
+    try:
+        message = db.messages.find({'chat.$id':  ObjectId(chatID)})
+    except:
+        return {"status":"The chat ID is not valid", "status code":"?"}
+    if len(list(message)) == 0:
+        return {"status":"The chat does not exist or not messages in it"}
+    message = db.messages.find({'chat.$id':  ObjectId(chatID)},{"_id":0, "text":1,"date-time":1})
+    dict_messages = {}
+    for mes in message:
+        dict_messages[mes["date-time"]] = mes["text"]
+    return dict_messages

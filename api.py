@@ -101,10 +101,10 @@ def askaddUserJ(chatID):
 #obtain data from html
 @app.route("/chat/addmessage")
 def askMessageH():
-    return """<form action="/chat/user/addmessage" method="post">
+    return """<form action="/chat/addmessage" method="post">
             Insert a existing chat ID: <input type="text" name="chatID">
             Insert a existing user ID: <input type="text" name="userID">
-            Insert a date and time (YYYY-MM-DD HH:MM): <input type="text" name="date">
+            <br> Insert a date and time (YYYY-MM-DD HH:MM): <input type="text" name="date">
             Insert a message: <input type="text" name="message">
             <input type="submit">
             </form>"""
@@ -127,7 +127,27 @@ def askMessageJ(chatID):
     date_time = request.args["date"]
     message = request.args["text"]
     return addMessage(chat_id,user_id,date_time,message)
-    
+
+
+#obtain data from html
+@app.route("/chat/list")
+def askListH():
+    return """<form action="/chat/list" method="post">
+            Insert a existing chat ID: <input type="text" name="chatID">
+            <input type="submit">
+            </form>"""
+
+@app.route("/chat/list", methods=['GET', 'POST'])
+def getList():
+    chat_id = request.form["chatID"]
+    return findList(chat_id)
+
+#obtain data from jupyter
+@app.route("/chat/<chatID>/list")
+def askListJ(chatID):
+    chat_id = chatID
+    return findList(chat_id)
+
 
 
 app.run("0.0.0.0", PORT , debug=True)
