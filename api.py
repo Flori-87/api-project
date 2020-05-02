@@ -1,5 +1,7 @@
 from flask import Flask, request
 from fc_mongo import *
+from sentiment_analysis import *
+from recomender_system import *
 import os
 import dotenv
 dotenv.load_dotenv()
@@ -42,7 +44,7 @@ def userID(username):
 def askChatH():
     return """<form action="/chat/create" method="post">
             Insert a new chat: <input type="text" name="chatname">
-            Insert an existing user: <input type="text" name="userID">
+            Insert an existing user (optional): <input type="text" name="userID">
             <input type="submit">
             </form>"""
 
@@ -129,24 +131,45 @@ def askMessageJ(chatID):
     return addMessage(chat_id,user_id,date_time,message)
 
 
+
 #obtain data from html
+@app.route("/chat/sentiment")
 @app.route("/chat/list")
 def askListH():
-    return """<form action="/chat/list" method="post">
+    return f"""<form action={request.url} method="post">
             Insert a existing chat ID: <input type="text" name="chatID">
             <input type="submit">
             </form>"""
 
+
+
+@app.route("/chat/sentiment", methods=['GET', 'POST'])
 @app.route("/chat/list", methods=['GET', 'POST'])
 def getList():
     chat_id = request.form["chatID"]
-    return findList(chat_id)
+    list_messages = findList(chat_id)
+    if "list" in request.url:
+        return list_messages
+    return sentAnalysis(list_messages)
+    
 
 #obtain data from jupyter
+@app.route("/chat/<chatID>/sentiment")
 @app.route("/chat/<chatID>/list")
 def askListJ(chatID):
     chat_id = chatID
-    return findList(chat_id)
+    list_messages = findList(chat_id)
+    if "list" in request.url:
+        return list_messages
+    return sentAnalysis(list_messages)
+
+
+#prueba jupyter recommend friend
+@app.route("/user/<user_id>/recommend")
+def askRecommJ(user_id):
+    user = user_id
+    return friendRecomm(user_id)
+
 
 
 

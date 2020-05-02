@@ -134,8 +134,8 @@ def findList(chatID):
         return {"status":"The chat ID is not valid", "status code":"?"}
     if len(list(message)) == 0:
         return {"status":"The chat does not exist or not messages in it"}
-    message = db.messages.find({'chat.$id':  ObjectId(chatID)},{"_id":0, "text":1,"date-time":1})
+    message = db.messages.find({'chat.$id':  ObjectId(chatID)},{"text":1,"date-time":1,'user.$id':1})
     dict_messages = {}
     for mes in message:
-        dict_messages[mes["date-time"]] = mes["text"]
+        dict_messages[dumps(mes["_id"])] = [mes["text"],mes["date-time"],dumps(mes["user"]["$id"])]
     return dict_messages
