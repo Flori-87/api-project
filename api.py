@@ -84,11 +84,11 @@ def askaddUserH():
             <input type="submit">
             </form>"""
 
-@app.route("/user/create", methods=['GET', 'POST'])
+@app.route("/chat/adduser", methods=['GET', 'POST'])
 def getChatUser():
     chat_id = request.form["chatID"]
     user_id = request.form["userID"]
-    return addUser(chatID,userID)
+    return addUser(chat_id,user_id)
 
 #obtain data from jupyter
 @app.route("/chat/<chatID>/adduser")
@@ -98,20 +98,36 @@ def askaddUserJ(chatID):
     return addUser(chat_id,user_id)
 
 
-"""
-@app.route("/chat/<chatID>/user/<userID>/addmessage/<text>")
-def addMessage(chatID,userID,text):
-    #Purpose:Add a message to the conversation. Help: Before adding the chat message to the database, check that the incoming user is part of this chat id. If not, raise an exception.
+#obtain data from html
+@app.route("/chat/addmessage")
+def askMessageH():
+    return """<form action="/chat/user/addmessage" method="post">
+            Insert a existing chat ID: <input type="text" name="chatID">
+            Insert a existing user ID: <input type="text" name="userID">
+            Insert a date and time (YYYY-MM-DD HH:MM): <input type="text" name="date">
+            Insert a message: <input type="text" name="message">
+            <input type="submit">
+            </form>"""
 
-    db.chats.update_one({"_id" : ObjectId(chatID)}, {"$push" : { "users": userID }})
-    return {"_id" : chatID}
+@app.route("/chat/addmessage", methods=['GET', 'POST'])
+def getMessage():
+    chat_id = request.form["chatID"]
+    user_id = request.form["userID"]
+    date = request.form["date"]
+    message = request.form["message"]
+    return addMessage(chat_id,user_id,date,message)
 
-- (POST) `/chat/<chat_id>/addmessage`
-  - **Params:**
-    - `chat_id`: Chat to store message
-    - `user_id`: the user that writes the message
-    - `text`: Message text
-  - **Returns:** `message_id`
-"""
+
+
+#obtain data from jupyter
+@app.route("/chat/<chatID>/addmessage")
+def askMessageJ(chatID):
+    chat_id = chatID
+    user_id = request.args["userID"]
+    date_time = request.args["date"]
+    message = request.args["text"]
+    return addMessage(chat_id,user_id,date_time,message)
+    
+
 
 app.run("0.0.0.0", PORT , debug=True)

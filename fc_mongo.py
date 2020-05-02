@@ -2,6 +2,7 @@
 from fc_check import *
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from bson.dbref import DBRef
 from bson.json_util import dumps
 import os
 import dotenv
@@ -88,8 +89,12 @@ def chatID(chatname):
     return chat
 
 def addUser(chatID,userID):
-    chat = db.chats.find({"_id" : ObjectId(chatID)})
-    user = db.users.find({"_id" : ObjectId(userID)})
+    try:
+        chat = db.chats.find({"_id" : ObjectId(chatID)})
+        user = db.users.find({"_id" : ObjectId(userID)})
+    except: 
+        # cuando los id no son validos
+        return {"status":"The user ID or chat ID is not valid", "status code":"?"}
     if len(list(chat)) == 0 or len(list(user)) == 0:
         return {"status":"Chat ID or User ID does not exist in the database. Please, create it before doing this step","status code":"?"}
     userInChat = db.chats.find({"$and" : [{"_id" : ObjectId(chatID)},{'users.$id':  ObjectId(userID)}]})
@@ -98,3 +103,36 @@ def addUser(chatID,userID):
     db.chats.update_one({"_id" : ObjectId(chatID)}, {"$push" : { "users": {"$ref": "users","$id": ObjectId(userID),"$db" : "api-project"}}})
     db.users.update_one({"_id" : ObjectId(userID)}, {"$push" : { "chats": {"$ref": "chats","$id": ObjectId(chatID),"$db" : "api-project"}}})     
     return {"_id" : chatID}
+
+def addMessage(chatID,userID,date,text):
+    #Purpose:Add a message to the conversation. Help: Before adding the chat message to the database, check that the incoming user is part of this chat id. If not, raise an exception.
+    try:
+        chat = db.chats.find({"_id" : ObjectId(chatID)})
+        user = db.users.find({"_id" : ObjectId(userID)})
+    except: 
+        # cuando los id no son validos
+        return {"status":"The user ID or chat ID is not valid", "status code":"?"}
+    if len(list(chat)) == 0 or len(list(user)) == 0:
+        return {"status":"Chat ID or User ID does not exist in the database. Please, create it before doing this step","status code":"?"}
+    message = textExist(text,date,chatID,userID)
+    if message[0]:
+        return {"status":"This message by this user at that date-time is already in this chat","status code":"?"}
+    message_profile = {"chat":DBRef("chats",ObjectId(chatID),"api-project"), "user":DBRef("users",ObjectId(userID),"api-project"),'text': text, "date-time":date}
+    db.messages.insert(message_profile)
+    message = messageID(text,date,chatID,userID)
+    return dumps(message)
+
+#me acabo de dar cuenta que las funciones de buscar el ID y de buscar la existencia son iguales, debo reducir a uno
+def messageID(text,date,chatID,userID):
+    message = db.messages.find({"$and":[{"text" : text},{"date-time":date},{'user.$id':  ObjectId(userID)},{'chat.$id':  ObjectId(chatID)}]},{})
+    return message
+    
+"""
+    `/chat/<chat_id>/addmessage`
+  - **Purpose:** Add a message to the conversation. Help: Before adding the chat message to the database, check that the incoming user is part of this chat id. If not, raise an exception.
+  - **Params:**
+    - `chat_id`: Chat to store message
+    - `user_id`: the user that writes the message
+    - `text`: Message text
+  - **Returns:** `message_id`
+"""
