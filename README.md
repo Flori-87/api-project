@@ -15,12 +15,12 @@ To achieve this goal, the following objectives will be pursued:
 - Collection `messages`. All messages of chat users added to the database will be stored as documents in this collection. In addition to the text, sending date and time of each message, origin user and chat will be stored in the document. Chats and users will be added as references to their corresponding collections. 
 
 2) Create an API in Flask to store users/chats/messages in the database and implement the following endpoints:
-`/user/create/<username>` --> Create a new user and save into DB. This request will receive the "username" parameter and return the object ID.  
-`/chat/create` --> Create a new chat. It will receive an user ID (optional) who will participate in the chat and return the chat object ID.
-`/chat/<chat_id>/adduser` --> It will receive the new user to add to an existing chat and return the chat object ID. 
-`/chat/<chat_id>/addmessage` --> This request will add a message to an existing chat from an existing user. It will receive the chat ID , user ID, text and sending date-time and returns the messje object ID.
-`/chat/<chat_id>/list` -->  Get all messages from a chat, receiving the chat ID and returning a json array with its content.
-`/user/<user_id>/recommend` --> Recommend friend to this user based on chat contents through NLP analysis. The top 3 of similar users will be returned from the ID user received.
-`/chat/<chat_id>/sentiment` --> Analyze sentiments from chat messages using NLTK package. A json array with all sentiments from messages in the chat will be received.
+- `/user/create/<username>` --> Create a new user and save into DB. This request will receive the "username" parameter and return the object ID.
+- `/chat/create` --> Create a new chat. It will receive an user ID (optional) who will participate in the chat and return the chat object ID.
+- `/chat/<chat_id>/adduser` --> It will receive the new user to add to an existing chat and return the chat object ID.
+- `/chat/<chat_id>/addmessage` --> This request will add a message to an existing chat from an existing user. It will receive the chat ID , user ID, text and sending date-time and returns the messje object ID.
+- `/chat/<chat_id>/list` -->  Get all messages from a chat, receiving the chat ID and returning a json array with its content.
+- `/user/<user_id>/recommend` --> Recommend friend to this user based on chat contents through NLP analysis. The top 3 of similar users will be returned from the ID user received.
+- `/chat/<chat_id>/sentiment` --> Analyze sentiments from chat messages using NLTK package. A json array with all sentiments from messages in the chat will be received.
 
 3) Store messages in Mongo Atlas (cloud database) and create a Docker image with the code to deploy the service to heroku.
