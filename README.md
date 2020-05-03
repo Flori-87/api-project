@@ -17,6 +17,8 @@ To achieve this goal, the following objectives will be pursued:
 2. Create an API in Flask to store users/chats/messages in the database and implement the following endpoints:
 - `/user/create/<username>` --> Create a new user and save into DB. This request will receive the "username" parameter and return the object ID.
 - `/chat/create` --> Create a new chat. It will receive an user ID (optional) who will participate in the chat and return the chat object ID.
+- `/user/<username>` --> Get user ID from a received user name.
+- `/chat/<chatname>` --> Get chat ID from a received chat name.
 - `/chat/<chat_id>/adduser` --> It will receive the new user to add to an existing chat and return the chat object ID.
 - `/chat/<chat_id>/addmessage` --> This request will add a message to an existing chat from an existing user. It will receive the chat ID , user ID, text and sending date-time and returns the messje object ID.
 - `/chat/<chat_id>/list` -->  Get all messages from a chat, receiving the chat ID and returning a json array with its content.
