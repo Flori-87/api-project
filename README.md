@@ -9,12 +9,12 @@ To achieve this goal, the following objectives will be pursued:
 - Deploy the service with docker to heroku and store messages in a cloud database. 
 
 ### Tools & Approach
-1) Generate a database in Mongo to store chat messages. The database will contain three collections: "users", "chats" and "messages".
+1. Generate a database in Mongo to store chat messages. The database will contain three collections: "users", "chats" and "messages".
 - Collection `users`. This collection will store documents about chat users, such as user name and chats which user participates in. Chats will be store as arrays containing references that point to a document in the "chats" collection through the "object ID".
 - Collection `chats`. It will store documents about chats added to the database, such as chat name and users in the chat. In the same way that in the previous collection, users will be store as arrays containing references to the "users" collection.
 - Collection `messages`. All messages of chat users added to the database will be stored as documents in this collection. In addition to the text, sending date and time of each message, origin user and chat will be stored in the document. Chats and users will be added as references to their corresponding collections. 
 
-2) Create an API in Flask to store users/chats/messages in the database and implement the following endpoints:
+2. Create an API in Flask to store users/chats/messages in the database and implement the following endpoints:
 - `/user/create/<username>` --> Create a new user and save into DB. This request will receive the "username" parameter and return the object ID.
 - `/chat/create` --> Create a new chat. It will receive an user ID (optional) who will participate in the chat and return the chat object ID.
 - `/chat/<chat_id>/adduser` --> It will receive the new user to add to an existing chat and return the chat object ID.
@@ -23,4 +23,4 @@ To achieve this goal, the following objectives will be pursued:
 - `/user/<user_id>/recommend` --> Recommend friend to this user based on chat contents through NLP analysis. The top 3 of similar users will be returned from the ID user received.
 - `/chat/<chat_id>/sentiment` --> Analyze sentiments from chat messages using NLTK package. A json array with all sentiments from messages in the chat will be received.
 
-3) Store messages in Mongo Atlas (cloud database) and create a Docker image with the code to deploy the service to heroku.
+3. Store messages in Mongo Atlas (cloud database) and create a Docker image with the code to deploy the service to heroku.
