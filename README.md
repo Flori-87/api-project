@@ -15,8 +15,8 @@ To achieve this goal, the following objectives will be pursued:
 - Collection `messages`. All messages of chat users added to the database will be stored as documents in this collection. In addition to the text, sending date and time of each message, origin user and chat will be stored in the document. Chats and users will be added as references to their corresponding collections. 
 
 2. Create an API in Flask to store users/chats/messages in the database and implement the following endpoints:
-- `/user/create/<username>` --> Create a new user and save into DB. This request will receive the "username" parameter and return the object ID.
-- `/chat/create` --> Create a new chat. It will receive an user ID (optional) who will participate in the chat and return the chat object ID.
+- `/user/create/<username>` -> Create a new user and save into DB. This request will receive the "username" parameter and return the object ID.
+- `/chat/create` -> Create a new chat. It will receive an user ID (optional) who will participate in the chat and return the chat object ID.
 - `/user/<username>` --> Get user ID from a received user name.
 - `/chat/<chatname>` --> Get chat ID from a received chat name.
 - `/chat/<chat_id>/adduser` --> It will receive the new user to add to an existing chat and return the chat object ID.
