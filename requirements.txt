@@ -1,0 +1,8 @@
+flask
+pymongo
+python-dotenv
+dnspython
+pandas
+nltk
+scikit-learn
+pymongo[srv]
