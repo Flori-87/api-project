@@ -2,6 +2,7 @@ from flask import Flask, request
 from fc_mongo import *
 from sentiment_analysis import *
 from recomender_system import *
+import re
 import os
 import dotenv
 dotenv.load_dotenv()
@@ -11,7 +12,7 @@ PORT = os.getenv("PORT")
 
 app = Flask(__name__)
 
-
+# CREATE USER
 #obtain data from html
 @app.route("/user/create")
 def askUserH():
@@ -31,14 +32,8 @@ def askUserJ(username):
     username = username
     return createUser(username)
 
-"""
-modificar para que no tenga nada de mongo
-@app.route("/user/<username>") #con decorador para saber el ID de un usuario
-def userID(username):
-    usuario = db.users.find({"name":username},{})
-    return dumps(usuario)
-"""
 
+# CREATE CHAT (w/ or w/o user)
 #obtain data from html
 @app.route("/chat/create")
 def askChatH():
@@ -69,20 +64,13 @@ def askChatJ(chatname):
     return createChat(chatname, userID)
 
 
-"""
-Cambiar para que no llame a mongo y solo obtenga el chat name
-@app.route("/chat/<chatname>") #con decorador para saber el ID de un usuario
-def chatID(chatname):
-    chat = db.chats.find({"name":chatname},{})
-    return chat
-"""
-
+# ADD USER TO A CHAT 
 #obtain data from html
 @app.route("/chat/adduser")
 def askaddUserH():
     return """<form action="/chat/adduser" method="post">
-            Insert a existing chat ID: <input type="text" name="chatID">
-            Insert a existing user ID: <input type="text" name="userID">
+            Insert an existing chat ID: <input type="text" name="chatID">
+            Insert an existing user ID: <input type="text" name="userID">
             <input type="submit">
             </form>"""
 
@@ -99,13 +87,13 @@ def askaddUserJ(chatID):
     user_id = request.args["userID"]
     return addUser(chat_id,user_id)
 
-
+# ADD MESSAGE TO A CHAT 
 #obtain data from html
 @app.route("/chat/addmessage")
 def askMessageH():
     return """<form action="/chat/addmessage" method="post">
-            Insert a existing chat ID: <input type="text" name="chatID">
-            Insert a existing user ID: <input type="text" name="userID">
+            Insert an existing chat ID: <input type="text" name="chatID">
+            Insert an existing user ID: <input type="text" name="userID">
             <br> Insert a date and time (YYYY-MM-DD HH:MM): <input type="text" name="date">
             Insert a message: <input type="text" name="message">
             <input type="submit">
@@ -131,13 +119,13 @@ def askMessageJ(chatID):
     return addMessage(chat_id,user_id,date_time,message)
 
 
-
+# OBTAIN MESSAGE LIST OR SENTIMENTS FROM A CHAT
 #obtain data from html
 @app.route("/chat/sentiment")
 @app.route("/chat/list")
 def askListH():
     return f"""<form action={request.url} method="post">
-            Insert a existing chat ID: <input type="text" name="chatID">
+            Insert an existing chat ID: <input type="text" name="chatID">
             <input type="submit">
             </form>"""
 
@@ -163,12 +151,57 @@ def askListJ(chatID):
         return list_messages
     return sentAnalysis(list_messages)
 
+# RECOMMEND FRIEND
+# recommend friend from html
+@app.route("/user/recommend")
+def askUserforRecommH():
+    return """<form action="/user/recommend" method="post">
+            Insert an existing user ID: <input type="text" name="userID">
+            <input type="submit">
+            </form>"""
 
-#prueba jupyter recommend friend
+@app.route("/user/recommend", methods=['GET', 'POST'])
+def askRecommH():
+    user_id = request.form["userID"]
+    return friendRecomm(user_id)
+
+# recommend friend from jupiter
 @app.route("/user/<user_id>/recommend")
 def askRecommJ(user_id):
     user = user_id
     return friendRecomm(user_id)
+
+
+
+#  FIND USER OR CHAT ID BY NAME
+# obtain name form html
+@app.route("/user", endpoint="user")
+@app.route("/chat",endpoint="chat")
+def getNameH():
+    return f"""<form action="{request.url}" method="post">
+            Insert the name of an existing {request.endpoint} to find the corresponding ID: <input type="text" name="name">
+            <input type="submit">
+            </form>"""
+
+@app.route("/user", methods=['GET', 'POST'])
+@app.route("/chat", methods=['GET', 'POST'])
+def getID():
+    nameID = request.form["name"]
+    if "user" in request.url:
+        return returnID(userID(nameID),"user",nameID)
+    else:
+        return returnID(chatID(nameID),"chat",nameID)
+
+#obtain name from jupyter
+@app.route("/user/<name>")
+@app.route("/chat/<name>")
+def getNameJ(name):
+    nameID = name
+    if "user" in request.url:
+        return returnID(userID(nameID),"user",nameID)
+    else:
+        return returnID(chatID(nameID),"chat",nameID)
+
 
 
 

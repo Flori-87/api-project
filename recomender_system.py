@@ -66,7 +66,7 @@ def friendRecomm(userID):
     #from similarity matrix, choose the top 3 friends to recommend the analysed user
     df_friend_recommed = pd.DataFrame(sim_df[userID])
     df_friend_recommed = list(df_friend_recommed.loc[id_friends_recomm].sort_values(userID, ascending=False)[:3].index.values)
-    return {"top3friends":df_friend_recommed}
+    return {"top_friends":df_friend_recommed}
 
     
     
