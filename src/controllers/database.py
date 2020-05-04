@@ -113,6 +113,7 @@ def askMessageJ(chatID):
 
 # OBTAIN MESSAGE LIST OR SENTIMENTS FROM A CHAT
 #obtain data from html
+@app.route("/chat/sentiment/analysis")
 @app.route("/chat/sentiment")
 @app.route("/chat/list")
 def askListH():
@@ -122,7 +123,7 @@ def askListH():
             </form>"""
 
 
-
+@app.route("/chat/sentiment/analysis", methods=['GET', 'POST'])
 @app.route("/chat/sentiment", methods=['GET', 'POST'])
 @app.route("/chat/list", methods=['GET', 'POST'])
 def getList():
@@ -130,9 +131,11 @@ def getList():
     list_messages = findList(chat_id)
     if "list" in request.url:
         return list_messages
+    elif "analysis" in request.url:
+        return ReportsentAnalysis(chat_id)
     return sentAnalysis(list_messages)
     
-
+"""
 #obtain data from jupyter
 @app.route("/chat/<chatID>/sentiment")
 @app.route("/chat/<chatID>/list")
@@ -142,6 +145,21 @@ def askListJ(chatID):
     if "list" in request.url:
         return list_messages
     return sentAnalysis(list_messages)
+"""
+#obtain data from jupyter
+@app.route("/chat/<chatID>/sentiment/analysis")
+@app.route("/chat/<chatID>/sentiment")
+@app.route("/chat/<chatID>/list")
+def askListJ(chatID):
+    chat_id = chatID
+    list_messages = findList(chat_id)
+    if "list" in request.url:
+        return list_messages
+    elif "analysis" in request.url:
+        return ReportsentAnalysis(chat_id)
+    return sentAnalysis(list_messages)
+
+
 
 # RECOMMEND FRIEND
 # recommend friend from html

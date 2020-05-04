@@ -31,8 +31,10 @@ To achieve this goal, the following objectives will be pursued:
     - `/chat/list` --> html version
 - `/user/<user_id>/recommend` --> Recommend friend to this user based on chat contents through NLP analysis. The top 3 of similar users will be returned from the ID user received.
     - `/user/recommend` --> html version
-- `/chat/<chat_id>/sentiment` --> Analyze sentiments from chat messages using NLTK package. A json array with all sentiments from messages in the chat will be received.
+- `/chat/<chat_id>/sentiment` --> Analyze sentiments from each chat messages using NLTK package. A json array with all sentiments from messages in the chat will be received.
     - `/chat/sentiment` --> html version
+- `/chat/<chat_id>/sentiment/analysis` --> Analyze sentiments of chat messages from each user using NLTK package. A json array with sentiments from each user in the chat will be received.
+    - `/chat/sentiment/analysis` --> html version
     
 **3. Store messages in Mongo Atlas (cloud database) and create a Docker image with the code to deploy the service to heroku.**
 
