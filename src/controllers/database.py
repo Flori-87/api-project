@@ -187,9 +187,11 @@ def getID():
 #obtain name from jupyter
 @app.route("/user/<name>")
 @app.route("/chat/<name>")
+@errorHandler
 def getNameJ(name):
     nameID = name
     if "user" in request.url:
         return returnID(userID(nameID),"user",nameID)
     else:
         return returnID(chatID(nameID),"chat",nameID)
+        
