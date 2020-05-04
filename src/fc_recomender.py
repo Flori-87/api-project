@@ -40,7 +40,7 @@ def friendRecomm(userID):
     for users in users_chats_noUser:
         for value in users.values():
             for e in value:
-                list_users_chats_noUser.append(e)
+                list_users_chats_noUser.append(dumps(e))
     list_users_chats_noUser = list(set(list_users_chats_noUser))
 
     #list of user IDs from chats where analysed user is in
@@ -48,7 +48,7 @@ def friendRecomm(userID):
     for users in users_chats_User:
         for value in users.values():
             for e in value:
-                list_users_chats_User.append(e)
+                list_users_chats_User.append(dumps(e))
     list_users_chats_User = list(set(list_users_chats_User))
     
     #list of users who analysed user have never spoken with
@@ -60,10 +60,14 @@ def friendRecomm(userID):
     id_friends_recomm=[]
     for e in list_users_chats_noUser:
         id_friends_recomm.append((re.search(r"\w+\d+\w*",dumps(e))).group())
-    
+
     #from similarity matrix, choose the top 3 friends to recommend the analysed user
     df_friend_recommed = pd.DataFrame(sim_df[userID])
-    df_friend_recommed = list(df_friend_recommed.loc[id_friends_recomm].sort_values(userID, ascending=False)[:3].index.values)
+
+    labels = id_friends_recomm
+    
+    df_friend_recommed = list(df_friend_recommed.loc[df_friend_recommed.index.intersection(labels)].sort_values(userID, ascending=False)[:3].index.values)
+
     return {"top_friends":df_friend_recommed}
 
     
