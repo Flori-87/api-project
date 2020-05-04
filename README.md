@@ -16,13 +16,29 @@ To achieve this goal, the following objectives will be pursued:
 
 2. Create an API in Flask to store users/chats/messages in the database and implement the following endpoints:
 - `/user/create/<username>` --> Create a new user and save into DB. This request will receive the "username" parameter and return the object ID.
-- `/chat/create` --> Create a new chat. It will receive an user ID (optional) who will participate in the chat and return the chat object ID.
+    - `/user/create` --> html version
+- `/chat/create/<chatname>` --> Create a new chat. It will receive an user ID (optional) who will participate in the chat and return the chat object ID.
+    - `/chat/create` --> html version
 - `/user/<username>` --> Get user ID from a received user name.
+    - `/user` --> html version
 - `/chat/<chatname>` --> Get chat ID from a received chat name.
+    - `/chat` --> html version
 - `/chat/<chat_id>/adduser` --> It will receive the new user to add to an existing chat and return the chat object ID.
+    - `/chat/adduser` --> html version
 - `/chat/<chat_id>/addmessage` --> This request will add a message to an existing chat from an existing user. It will receive the chat ID , user ID, text and sending date-time and returns the messje object ID.
+    - `/chat/addmessage` --> html version
 - `/chat/<chat_id>/list` -->  Get all messages from a chat, receiving the chat ID and returning a json array with its content.
+    - `/chat/list` --> html version
 - `/user/<user_id>/recommend` --> Recommend friend to this user based on chat contents through NLP analysis. The top 3 of similar users will be returned from the ID user received.
+    - `/user/recommend` --> html version
 - `/chat/<chat_id>/sentiment` --> Analyze sentiments from chat messages using NLTK package. A json array with all sentiments from messages in the chat will be received.
-
+    - `/chat/sentiment` --> html version
+    
 3. Store messages in Mongo Atlas (cloud database) and create a Docker image with the code to deploy the service to heroku.
+
+
+
+
+
+
+
