@@ -50,10 +50,10 @@ def askChatJ(chatname):
     chatname = chatname
     if request.args:
         #el usuario ya debe existir en la base de datos usuarios si quiero introducirlo en un chat
-        userID = request.args["users"]
+        user_ID = request.args["userID"]
     else:
-        userID = None
-    return createChat(chatname, userID)
+        user_ID = None
+    return createChat(chatname, user_ID)
 
 
 # ADD USER TO A CHAT 
